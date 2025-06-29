@@ -3,472 +3,923 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Éclat Femme | Salão e Centro de Estética</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>Dashboard Administrativo - Salão de Beleza</title>
+    <!-- Font Awesome (ícones) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="admPage.css">
+    <style>
+        /* === ESTILOS GERAIS === */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background-color: #121212;
+            color: #e0e0e0;
+        }
+
+        /* === BARRA LATERAL === */
+        .sidebar {
+            width: 250px;
+            background: #1e1e1e;
+            color: #b0b0b0;
+            position: fixed;
+            height: 100vh;
+            padding: 20px 0;
+            border-right: 1px solid #333;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+        }
+
+        .sidebar-menu li {
+            padding: 15px 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            border-left: 3px solid transparent;
+        }
+
+        .sidebar-menu li:hover {
+            background: #2a2a2a;
+            color: #ffffff;
+        }
+
+        .sidebar-menu li.active {
+            background: #333;
+            color: #ffffff;
+            border-left: 3px solid #4a90e2;
+        }
+
+        .sidebar-menu i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+            color: #7a7a7a;
+        }
+
+        .sidebar-menu li.active i,
+        .sidebar-menu li:hover i {
+            color: #4a90e2;
+        }
+
+        .sidebar-divider {
+            height: 1px;
+            background-color: #333;
+            margin: 15px 20px;
+        }
+
+        .sidebar-title {
+            padding: 10px 20px;
+            color: #7a7a7a;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* === PAINEL PRINCIPAL === */
+        .main-panel {
+            margin-left: 250px;
+            width: calc(100% - 250px);
+            min-height: 100vh;
+            padding: 30px;
+            transition: all 0.3s ease;
+            background-color: #121212;
+        }
+
+        .content-panel {
+            display: none;
+        }
+
+        /* === CARDS/GRÁFICOS === */
+        .chart-container {
+            width: 100%;
+            height: auto;
+            margin-bottom: 25px;
+            background: #1e1e1e;
+            border-radius: 8px;
+            padding: 25px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            border: 1px solid #333;
+        }
+
+        h1 {
+            color: #f0f0f0;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        h2 {
+            color: #4a90e2;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 500;
+        }
+
+        h3 {
+            color: #f0f0f0;
+            margin: 20px 0 15px 0;
+            font-weight: 500;
+        }
+
+        /* === BOTÕES/INTERAÇÕES === */
+        .btn {
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            border: none;
+        }
+
+        .btn-primary {
+            background: #4a90e2;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #3a7bc8;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-danger {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c0392b;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-success {
+            background: #2ecc71;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #27ae60;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        /* === GRID DE MÉTRICAS === */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .metric-card {
+            background: #1e1e1e;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            border: 1px solid #333;
+        }
+
+        .metric-value {
+            font-size: 2.5rem;
+            color: #4a90e2;
+            font-weight: bold;
+        }
+
+        .metric-label {
+            color: #a0a0a0;
+            font-size: 0.9rem;
+        }
+
+        /* === FORMULÁRIOS E TABELAS === */
+        .form-container {
+            background: #1e1e1e;
+            border-radius: 8px;
+            padding: 25px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            border: 1px solid #333;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #a0a0a0;
+            font-size: 0.9rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px 15px;
+            background: #2a2a2a;
+            border: 1px solid #333;
+            border-radius: 5px;
+            color: #e0e0e0;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #4a90e2;
+            box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+        }
+
+        .form-row {
+            display: flex;
+            gap: 20px;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #1e1e1e;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            border: 1px solid #333;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #333;
+        }
+
+        th {
+            background: #2a2a2a;
+            color: #f0f0f0;
+            font-weight: 500;
+        }
+
+        tr:hover {
+            background: #2a2a2a;
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-sm {
+            padding: 5px 10px;
+            font-size: 0.8rem;
+        }
+
+        /* === HORÁRIOS DISPONÍVEIS === */
+        .time-slots {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .time-slot {
+            padding: 8px;
+            background: #2a2a2a;
+            border: 1px solid #333;
+            border-radius: 5px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .time-slot:hover {
+            background: #4a90e2;
+            border-color: #4a90e2;
+        }
+
+        .time-slot.selected {
+            background: #4a90e2;
+            border-color: #4a90e2;
+            color: white;
+        }
+
+        .time-slot.unavailable {
+            background: #333;
+            color: #7a7a7a;
+            cursor: not-allowed;
+        }
+    </style>
 </head>
-<body class="bg-gray-50">
-    <div class="flex h-screen overflow-hidden">
-        <!-- Sidebar -->
-        <div class="sidebar bg-white w-64 border-r border-gray-200 flex flex-col">
-            <div class="p-4 flex items-center justify-between border-b border-gray-200">
-                <div class="flex items-center space-x-2">
-                    <div class="w-8 h-8 rounded-full bg-gradient-to-r from-pink-500 to-purple-600 flex items-center justify-center">
-                    </div>
-                    <span class="font-bold text-lg text-black">Éclat Femme</span>
-                </div>
-                <button id="sidebar-toggle" class="md:hidden text-gray-500">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            
-            <div class="flex-1 overflow-y-auto py-4">
-                <nav>
-                    <div class="px-4 mb-6">
-                        <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Principal</h3>
-                        <ul class="mt-2 space-y-1">
-                            <li>
-                                <a href="#" class="flex items-center px-3 py-2 text-sm font-medium rounded-md bg-pink-50 text-pink-700">
-                                    <i class="fas fa-tachometer-alt mr-3 text-pink-600"></i>
-                                    Painel
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" class="flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100">
-                                    <i class="fas fa-shopping-cart mr-3 text-gray-500"></i>
-                                    Histórico de Vendas
-                                    <span class="ml-auto bg-pink-100 text-pink-800 text-xs font-semibold px-2 py-0.5 rounded-full">3</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" class="flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100">
-                                    <i class="fas fa-chart-line mr-3 text-gray-500"></i>
-                                    Análises
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" class="flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100">
-                                    <i class="fas fa-cog mr-3 text-gray-500"></i>
-                                    Configurações
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                    
-                    <div class="px-4 mb-6">
-                        <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Relatórios</h3>
-                        <ul class="mt-2 space-y-1">
-                            <li>
-                                <a href="#" class="flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100">
-                                    <i class="fas fa-file-invoice mr-3 text-gray-500"></i>
-                                    Mensal
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" class="flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100">
-                                    <i class="fas fa-file-alt mr-3 text-gray-500"></i>
-                                    Trimestral
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" class="flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100">
-                                    <i class="fas fa-file-export mr-3 text-gray-500"></i>
-                                    Exportar
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                </nav>
-            </div>
-            
-            <div class="p-4 border-t border-gray-200">
-                <div class="flex items-center">
-                    <img class="w-10 h-10 rounded-full" src="https://randomuser.me/api/portraits/women/44.jpg" alt="Perfil do usuário">
-                    <div class="ml-3">
-                        <p class="text-sm font-medium text-gray-700">Sarah Johnson</p>
-                        <p class="text-xs text-gray-500">Administradora</p>
-                    </div>
-                    <button class="ml-auto text-gray-500 hover:text-gray-700">
-                        <i class="fas fa-sign-out-alt"></i>
-                    </button>
-                </div>
-            </div>
+<body>
+    <div class="dashboard-container">
+        <!-- BARRA LATERAL -->
+        <div class="sidebar">
+            <ul class="sidebar-menu">
+                <li class="active" data-panel="main-panel">
+                    <i class="fas fa-chart-line"></i> Dashboard
+                </li>
+                <li data-panel="clients-panel">
+                    <i class="fas fa-users"></i> Clientes
+                </li>
+                <li data-panel="services-panel">
+                    <i class="fas fa-scissors"></i> Serviços
+                </li>
+                <li data-panel="financial-panel">
+                    <i class="fas fa-file-invoice-dollar"></i> Financeiro
+                </li>
+            </ul>
+
+            <div class="sidebar-divider"></div>
+            <div class="sidebar-title">Gestão</div>
+
+            <ul class="sidebar-menu">
+                <li data-panel="employees-panel">
+                    <i class="fas fa-user-tie"></i> Funcionários
+                </li>
+                <li data-panel="new-client-panel">
+                    <i class="fas fa-user-plus"></i> Cadastrar Cliente
+                </li>
+            </ul>
         </div>
-        
-        <!-- Overlay para mobile -->
-        <div class="overlay"></div>
-        
-        <!-- Conteúdo principal -->
-        <div class="flex-1 overflow-auto">
-            <!-- Navegação superior -->
-            <header class="bg-white border-b border-gray-200">
-                <div class="px-4 py-3 flex items-center justify-between">
-                    <div class="flex items-center">
-                        <button id="mobile-menu-button" class="md:hidden text-gray-500 mr-2">
-                            <i class="fas fa-bars"></i>
-                        </button>
-                        <h1 class="text-xl font-semibold text-gray-800">Painel</h1>
-                    </div>
-                    
-                    <div class="flex items-center space-x-4">
-                        <div class="relative">
-                            <button id="search-button" class="text-gray-500 hover:text-gray-700">
-                                <i class="fas fa-search"></i>
-                            </button>
-                            <div id="search-box" class="hidden absolute right-0 mt-2 w-64 bg-white rounded-md shadow-lg z-10">
-                                <input type="text" placeholder="Pesquisar..." class="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-pink-500">
-                            </div>
-                        </div>
-                        
-                        <button id="voice-search" class="text-gray-500 hover:text-gray-700 relative group">
-                            <i class="fas fa-microphone"></i>
-                            <span class="absolute -top-2 -right-2 w-3 h-3 bg-pink-500 rounded-full animate-ping opacity-0 group-hover:opacity-100"></span>
-                        </button>
-                        
-                        <button id="dark-mode-toggle" class="text-gray-500 hover:text-gray-700">
-                            <i class="fas fa-moon"></i>
-                        </button>
-                        
-                        <div class="relative">
-                            <button class="text-gray-500 hover:text-gray-700">
-                                <i class="fas fa-bell"></i>
-                                <span class="absolute -top-1 -right-1 w-3 h-3 bg-pink-500 rounded-full"></span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </header>
-            
-            <!-- Área de conteúdo principal -->
-            <main class="p-4">
-                <!-- Cartões de KPIs -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                    <div class="kpi-card bg-white rounded-lg shadow p-6 hover:shadow-md">
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <p class="text-sm font-medium text-black-500">Vendas Totais</p>
-                                <p class="text-2xl font-bold mt-1">R$24.780</p>
-                                <p class="text-sm mt-2">
-                                    <span class="text-green-500 font-medium">+12.5%</span> desde o mês passado
-                                </p>
-                            </div>
-                            <div class="w-12 h-12 rounded-full bg-pink-100 flex items-center justify-center">
-                                <i class="fas fa-dollar-sign text-pink-600"></i>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="kpi-card bg-white rounded-lg shadow p-6 hover:shadow-md">
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <p class="text-sm font-medium text-gray-500">Taxa de Conversão</p>
-                                <p class="text-2xl font-bold mt-1">3.42%</p>
-                                <p class="text-sm mt-2">
-                                    <span class="text-green-500 font-medium">+2.1%</span> desde o mês passado
-                                </p>
-                            </div>
-                            <div class="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center">
-                                <i class="fas fa-percentage text-purple-600"></i>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="kpi-card bg-white rounded-lg shadow p-6 hover:shadow-md">
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <p class="text-sm font-medium text-gray-500">Usuários Ativos</p>
-                                <p class="text-2xl font-bold mt-1">1.248</p>
-                                <p class="text-sm mt-2">
-                                    <span class="text-green-500 font-medium">+8.7%</span> desde o mês passado
-                                </p>
-                            </div>
-                            <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center">
-                                <i class="fas fa-users text-blue-600"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+
+        <!-- PAINEL PRINCIPAL -->
+        <div class="main-panel">
+            <!-- DASHBOARD -->
+            <div id="main-panel" class="content-panel" style="display: block;">
+                <h1><i class="fas fa-tachometer-alt"></i> Visão Geral</h1>
                 
-                <!-- Gráficos -->
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
-                    <div class="lg:col-span-2 bg-white rounded-lg shadow p-4">
-                        <div class="flex items-center justify-between mb-4">
-                            <h2 class="text-lg font-semibold">Visão Geral de Vendas</h2>
-                            <div class="flex space-x-2">
-                                <button class="px-3 py-1 text-xs bg-pink-100 text-pink-700 rounded-full">Semanal</button>
-                                <button class="px-3 py-1 text-xs bg-gray-100 text-gray-700 rounded-full">Mensal</button>
-                                <button class="px-3 py-1 text-xs bg-gray-100 text-gray-700 rounded-full">Anual</button>
-                            </div>
-                        </div>
-                        <canvas id="salesChart" height="250"></canvas>
+                <!-- MÉTRICAS RÁPIDAS -->
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-value">126</div>
+                        <div class="metric-label">Clientes/Mês</div>
                     </div>
-                    
-                    <div class="bg-white rounded-lg shadow p-4">
-                        <h2 class="text-lg font-semibold mb-4">Fontes de Tráfego</h2>
-                        <canvas id="trafficChart" height="250"></canvas>
+                    <div class="metric-card">
+                        <div class="metric-value">R$ 5.894,90</div>
+                        <div class="metric-label">Faturamento</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">75%</div>
+                        <div class="metric-label">Ocupação</div>
                     </div>
                 </div>
-                
-                <!-- Atividade Recente & Mapa de Calor -->
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
-                    <div class="bg-white rounded-lg shadow p-4">
-                        <h2 class="text-lg font-semibold mb-4">Atividade Recente</h2>
-                        <div class="space-y-4">
-                            <div class="activity-item">
-                                <p class="text-sm font-medium">Novo pedido #1234 realizado</p>
-                                <p class="text-xs text-gray-500 mt-1">2 minutos atrás</p>
-                            </div>
-                            <div class="activity-item">
-                                <p class="text-sm font-medium">Cadastro de usuário concluído</p>
-                                <p class="text-xs text-gray-500 mt-1">15 minutos atrás</p>
-                            </div>
-                            <div class="activity-item">
-                                <p class="text-sm font-medium">Pagamento recebido para #1234</p>
-                                <p class="text-xs text-gray-500 mt-1">1 hora atrás</p>
-                            </div>
-                            <div class="activity-item">
-                                <p class="text-sm font-medium">Novo produto adicionado ao catálogo</p>
-                                <p class="text-xs text-gray-500 mt-1">3 horas atrás</p>
-                            </div>
-                            <div class="activity-item">
-                                <p class="text-sm font-medium">Atualização do sistema concluída</p>
-                                <p class="text-xs text-gray-500 mt-1">Ontem</p>
-                            </div>
-                        </div>
-                        <button class="mt-4 text-sm text-pink-600 hover:text-pink-700 font-medium">Ver toda a atividade</button>
-                    </div>
-                    
-                    <div class="lg:col-span-2 bg-white rounded-lg shadow p-4">
-                        <h2 class="text-lg font-semibold mb-4">Mapa de Calor de Atividade do Usuário</h2>
-                        <div class="overflow-x-auto">
-                            <div class="min-w-max">
-                                <div class="grid grid-cols-8 gap-1">
-                                    <!-- Cabeçalho do mapa de calor (dias) -->
-                                    <div></div>
-                                    <div class="text-xs text-center py-1">Seg</div>
-                                    <div class="text-xs text-center py-1">Ter</div>
-                                    <div class="text-xs text-center py-1">Qua</div>
-                                    <div class="text-xs text-center py-1">Qui</div>
-                                    <div class="text-xs text-center py-1">Sex</div>
-                                    <div class="text-xs text-center py-1">Sáb</div>
-                                    <div class="text-xs text-center py-1">Dom</div>
-                                    
-                                    <!-- Células do mapa de calor -->
-                                    <div class="text-xs py-1">8 AM</div>
-                                    <div class="w-6 h-6 rounded-sm bg-pink-100 hover:bg-pink-200 cursor-pointer tooltip" data-tooltip="Seg 8AM: 12 usuários"></div>
-                                    <div class="w-6 h-6 rounded-sm bg-pink-50 hover:bg-pink-100 cursor-pointer tooltip" data-tooltip="Ter 8AM: 5 usuários"></div>
-                                    <div class="w-6 h-6 rounded-sm bg-pink-100 hover:bg-pink-200 cursor-pointer tooltip" data-tooltip="Qua 8AM: 15 usuários"></div>
-                                    <div class="w-6 h-6 rounded-sm bg-pink-200 hover:bg-pink-300 cursor-pointer tooltip" data-tooltip="Qui 8AM: 22 usuários"></div>
-                                    <div class="w-6 h-6 rounded-sm bg-pink-100 hover:bg-pink-200 cursor-pointer tooltip" data-tooltip="Sex 8AM: 18 usuários"></div>
-                                    <div class="w-6 h-6 rounded-sm bg-pink-50 hover:bg-pink-100 cursor-pointer tooltip" data-tooltip="Sáb 8AM: 3 usuários"></div>
-                                    <div class="w-6 h-6 rounded-sm bg-pink-50 hover:bg-pink-100 cursor-pointer tooltip" data-tooltip="Dom 8AM: 2 usuários"></div>
-                                    
-                                    <div class="text-xs py-1">12 PM</div>
-                                    <div class="w-6 h-6 rounded-sm bg-pink-300 hover:bg-pink-400 cursor-pointer tooltip" data-tooltip="Seg 12PM: 45 usuários"></div>
-                                    <div class="w-6 h-6 rounded-sm bg-pink-400 hover:bg-pink-500 cursor-pointer tooltip" data-tooltip="Ter 12PM: 52 usuários"></div>
-                                    <div class="w-6 h-6 rounded-sm bg-pink-300 hover:bg-pink-400 cursor-pointer tooltip" data-tooltip="Qua 12PM: 38 usuários"></div>
-                                    <div class="w-6 h-6 rounded-sm bg-pink-500 hover:bg-pink-600 cursor-pointer tooltip" data-tooltip="Qui 12PM: 68 usuários"></div>
-                                    <div class="w-6 h-6 rounded-sm bg-pink-400 hover:bg-pink-500 cursor-pointer tooltip" data-tooltip="Sex 12PM: 55 usuários"></div>
-                                    <div class="w-6 h-6 rounded-sm bg-pink-200 hover:bg-pink-300 cursor-pointer tooltip" data-tooltip="Sáb 12PM: 25 usuários"></div>
-                                    <div class="w-6 h-6 rounded-sm bg-pink-100 hover:bg-pink-200 cursor-pointer tooltip" data-tooltip="Dom 12PM: 18 usuários"></div>
-                                    
-                                    <div class="text-xs py-1">4 PM</div>
-                                    <div class="w-6 h-6 rounded-sm bg-pink-400 hover:bg-pink-500 cursor-pointer tooltip" data-tooltip="Seg 4PM: 58 usuários"></div>
-                                    <div class="w-6 h-6 rounded-sm bg-pink-300 hover:bg-pink-400 cursor-pointer tooltip" data-tooltip="Ter 4PM: 42 usuários"></div>
-                                    <div class="w-6 h-6 rounded-sm bg-pink-500 hover:bg-pink-600 cursor-pointer tooltip" data-tooltip="Qua 4PM: 72 usuários"></div>
-                                    <div class="w-6 h-6 rounded-sm bg-pink-400 hover:bg-pink-500 cursor-pointer tooltip" data-tooltip="Qui 4PM: 55 usuários"></div>
-                                    <div class="w-6 h-6 rounded-sm bg-pink-300 hover:bg-pink-400 cursor-pointer tooltip" data-tooltip="Sex 4PM: 38 usuários"></div>
-                                    <div class="w-6 h-6 rounded-sm bg-pink-200 hover:bg-pink-300 cursor-pointer tooltip" data-tooltip="Sáb 4PM: 22 usuários"></div>
-                                    <div class="w-6 h-6 rounded-sm bg-pink-100 hover:bg-pink-200 cursor-pointer tooltip" data-tooltip="Dom 4PM: 15 usuários"></div>
-                                    
-                                    <div class="text-xs py-1">8 PM</div>
-                                    <div class="w-6 h-6 rounded-sm bg-pink-200 hover:bg-pink-300 cursor-pointer tooltip" data-tooltip="Seg 8PM: 28 usuários"></div>
-                                    <div class="w-6 h-6 rounded-sm bg-pink-300 hover:bg-pink-400 cursor-pointer tooltip" data-tooltip="Ter 8PM: 35 usuários"></div>
-                                    <div class="w-6 h-6 rounded-sm bg-pink-200 hover:bg-pink-300 cursor-pointer tooltip" data-tooltip="Qua 8PM: 25 usuários"></div>
-                                    <div class="w-6 h-6 rounded-sm bg-pink-300 hover:bg-pink-400 cursor-pointer tooltip" data-tooltip="Qui 8PM: 42 usuários"></div>
-                                    <div class="w-6 h-6 rounded-sm bg-pink-400 hover:bg-pink-500 cursor-pointer tooltip" data-tooltip="Sex 8PM: 52 usuários"></div>
-                                    <div class="w-6 h-6 rounded-sm bg-pink-300 hover:bg-pink-400 cursor-pointer tooltip" data-tooltip="Sáb 8PM: 38 usuários"></div>
-                                    <div class="w-6 h-6 rounded-sm bg-pink-200 hover:bg-pink-300 cursor-pointer tooltip" data-tooltip="Dom 8PM: 22 usuários"></div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="flex items-center justify-end mt-2 space-x-2">
-                            <span class="text-xs">Menos</span>
-                            <div class="flex space-x-1">
-                                <div class="w-4 h-4 rounded-sm bg-pink-50"></div>
-                                <div class="w-4 h-4 rounded-sm bg-pink-200"></div>
-                                <div class="w-4 h-4 rounded-sm bg-pink-400"></div>
-                                <div class="w-4 h-4 rounded-sm bg-pink-600"></div>
-                            </div>
-                            <span class="text-xs">Mais</span>
-                        </div>
-                    </div>
+
+                <!-- GRÁFICOS -->
+                <div class="chart-container">
+                    <h2><i class="fas fa-chart-pie"></i> Serviços Mais Populares</h2>
+                    <canvas id="servicesChart"></canvas>
                 </div>
+
+                <div class="chart-container">
+                    <h2><i class="fas fa-chart-line"></i> Movimento Mensal</h2>
+                    <canvas id="monthlyClientsChart"></canvas>
+                </div>
+            </div>
+
+            <!-- PAINEL DE CLIENTES -->
+            <div id="clients-panel" class="content-panel" style="display: none;">
+                <h1><i class="fas fa-users"></i> Gestão de Clientes</h1>
+                <div class="chart-container">
+                    <h2><i class="fas fa-chart-bar"></i> Perfil dos Clientes</h2>
+                    <canvas id="clientsProfileChart"></canvas>
+                </div>
+            </div>
+
+            <!-- PAINEL DE SERVIÇOS -->
+            <div id="services-panel" class="content-panel" style="display: none;">
+                <h1><i class="fas fa-scissors"></i> Análise de Serviços</h1>
+                <div class="chart-container">
+                    <h2><i class="fas fa-dollar-sign"></i> Lucro por Serviço</h2>
+                    <canvas id="profitServicesChart"></canvas>
+                </div>
+            </div>
+
+            <!-- PAINEL FINANCEIRO -->
+            <div id="financial-panel" class="content-panel" style="display: none;">
+                <h1><i class="fas fa-file-invoice-dollar"></i> Dashboard Financeiro</h1>
+                <div class="chart-container">
+                    <h2><i class="fas fa-chart-area"></i> Faturamento Anual</h2>
+                    <canvas id="annualRevenueChart"></canvas>
+                </div>
+            </div>
+
+            <!-- PAINEL DE FUNCIONÁRIOS -->
+            <div id="employees-panel" class="content-panel" style="display: none;">
+                <h1><i class="fas fa-user-tie"></i> Gestão de Funcionários</h1>
                 
-                <!-- Pedidos Recentes -->
-                <div class="bg-white rounded-lg shadow overflow-hidden">
-                    <div class="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
-                        <h2 class="text-lg font-semibold">Pedidos Recentes</h2>
-                        <div class="flex space-x-2">
-                            <button class="px-3 py-1 text-xs bg-pink-100 text-pink-700 rounded-full">Exportar CSV</button>
-                            <button class="px-3 py-1 text-xs bg-gray-100 text-gray-700 rounded-full">Ver Todos</button>
+                <div class="form-container">
+                    <h2><i class="fas fa-plus-circle"></i> Adicionar Novo Funcionário</h2>
+                    <form id="employee-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="employee-name">Nome Completo</label>
+                                <input type="text" id="employee-name" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="employee-role">Cargo</label>
+                                <input type="text" id="employee-role" class="form-control" required>
+                            </div>
                         </div>
-                    </div>
-                    <div class="overflow-x-auto">
-                        <table class="min-w-full divide-y divide-gray-200">
-                            <thead class="bg-gray-50">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="employee-email">E-mail</label>
+                                <input type="email" id="employee-email" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="employee-phone">Telefone</label>
+                                <input type="tel" id="employee-phone" class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="employee-address">Endereço</label>
+                            <input type="text" id="employee-address" class="form-control" required>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="employee-salary">Salário</label>
+                                <input type="text" id="employee-salary" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="employee-hire-date">Data de Contratação</label>
+                                <input type="date" id="employee-hire-date" class="form-control" required>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Cadastrar Funcionário</button>
+                    </form>
+                </div>
+
+                <div class="chart-container">
+                    <h2><i class="fas fa-list"></i> Lista de Funcionários</h2>
+                    <div class="table-container">
+                        <table>
+                            <thead>
                                 <tr>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID do Pedido</th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cliente</th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data</th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Valor</th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ações</th>
+                                    <th>Nome</th>
+                                    <th>Cargo</th>
+                                    <th>E-mail</th>
+                                    <th>Telefone</th>
+                                    <th>Ações</th>
                                 </tr>
                             </thead>
-                            <tbody class="bg-white divide-y divide-gray-200">
-                                <tr class="holographic-card hover:bg-gray-50">
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#12345</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="flex items-center">
-                                            <div class="flex-shrink-0 h-10 w-10">
-                                                <img class="h-10 w-10 rounded-full" src="https://randomuser.me/api/portraits/men/32.jpg" alt="">
-                                            </div>
-                                            <div class="ml-4">
-                                                <div class="text-sm font-medium text-gray-900">John Smith</div>
-                                                <div class="text-sm text-gray-500">john@example.com</div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">15 Maio 2023</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Concluído</span>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">R$245,00</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                        <button class="text-pink-600 hover:text-pink-900 mr-3">Ver</button>
-                                        <button class="text-gray-600 hover:text-gray-900">Editar</button>
+                            <tbody>
+                                <tr>
+                                    <td>José Costa</td>
+                                    <td>Cabeleireiro</td>
+                                    <td>José.c@gmail.com</td>
+                                    <td>(21) 98765-4321</td>
+                                    <td class="actions">
+                                        <button class="btn btn-primary btn-sm">Editar</button>
+                                        <button class="btn btn-danger btn-sm">Excluir</button>
                                     </td>
                                 </tr>
-                                
-                                <tr class="holographic-card hover:bg-gray-50">
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#12344</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="flex items-center">
-                                            <div class="flex-shrink-0 h-10 w-10">
-                                                <img class="h-10 w-10 rounded-full" src="https://randomuser.me/api/portraits/women/28.jpg" alt="">
-                                            </div>
-                                            <div class="ml-4">
-                                                <div class="text-sm font-medium text-gray-900">Emma Johnson</div>
-                                                <div class="text-sm text-gray-500">emma@example.com</div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">14 Maio 2023</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">Processando</span>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">R$189,00</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                        <button class="text-pink-600 hover:text-pink-900 mr-3">Ver</button>
-                                        <button class="text-gray-600 hover:text-gray-900">Editar</button>
+                                <tr>
+                                    <td>Maria Martins</td>
+                                    <td>Massagista</td>
+                                    <td>Maria.m@gmail.com</td>
+                                    <td>(21) 99876-5432</td>
+                                    <td class="actions">
+                                        <button class="btn btn-primary btn-sm">Editar</button>
+                                        <button class="btn btn-danger btn-sm">Excluir</button>
                                     </td>
                                 </tr>
-                                
-                                <tr class="holographic-card hover:bg-gray-50">
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#12343</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="flex items-center">
-                                            <div class="flex-shrink-0 h-10 w-10">
-                                                <img class="h-10 w-10 rounded-full" src="https://randomuser.me/api/portraits/men/75.jpg" alt="">
-                                            </div>
-                                            <div class="ml-4">
-                                                <div class="text-sm font-medium text-gray-900">Michael Brown</div>
-                                                <div class="text-sm text-gray-500">michael@example.com</div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">13 Maio 2023</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">Enviado</span>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">R$320,00</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                        <button class="text-pink-600 hover:text-pink-900 mr-3">Ver</button>
-                                        <button class="text-gray-600 hover:text-gray-900">Editar</button>
+                                <tr>
+                                    <td>Camila Dias</td>
+                                    <td>Manicure/Pedicure</td>
+                                    <td>Camila.d@gmail.com</td>
+                                    <td>(21) 97654-3210</td>
+                                    <td class="actions">
+                                        <button class="btn btn-primary btn-sm">Editar</button>
+                                        <button class="btn btn-danger btn-sm">Excluir</button>
                                     </td>
                                 </tr>
-                                
-                                <tr class="holographic-card hover:bg-gray-50">
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#12342</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="flex items-center">
-                                            <div class="flex-shrink-0 h-10 w-10">
-                                                <img class="h-10 w-10 rounded-full" src="https://randomuser.me/api/portraits/women/42.jpg" alt="">
-                                            </div>
-                                            <div class="ml-4">
-                                                <div class="text-sm font-medium text-gray-900">Sarah Wilson</div>
-                                                <div class="text-sm text-gray-500">sarah@example.com</div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">12 Maio 2023</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Concluído</span>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">R$275,00</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                        <button class="text-pink-600 hover:text-pink-900 mr-3">Ver</button>
-                                        <button class="text-gray-600 hover:text-gray-900">Editar</button>
+                                <tr>
+                                    <td>Rafaela Santos</td>
+                                    <td>Massoterapeuta</td>
+                                    <td>Rafaela.s@gmail.com</td>
+                                    <td>(21) 96543-2109</td>
+                                    <td class="actions">
+                                        <button class="btn btn-primary btn-sm">Editar</button>
+                                        <button class="btn btn-danger btn-sm">Excluir</button>
                                     </td>
                                 </tr>
-                                
-                                <tr class="holographic-card hover:bg-gray-50">
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#12341</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="flex items-center">
-                                            <div class="flex-shrink-0 h-10 w-10">
-                                                <img class="h-10 w-10 rounded-full" src="https://randomuser.me/api/portraits/men/63.jpg" alt="">
-                                            </div>
-                                            <div class="ml-4">
-                                                <div class="text-sm font-medium text-gray-900">David Taylor</div>
-                                                <div class="text-sm text-gray-500">david@example.com</div>
-                                            </div>
-                                        </div>
+                                <tr>
+                                    <td>João Marques</td>
+                                    <td>Manicure</td>
+                                    <td>joao.m@gmail.com</td>
+                                    <td>(21) 95432-1098</td>
+                                    <td class="actions">
+                                        <button class="btn btn-primary btn-sm">Editar</button>
+                                        <button class="btn btn-danger btn-sm">Excluir</button>
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">11 Maio 2023</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">Cancelado</span>
+                                </tr>
+                                <tr>
+                                    <td>Pedro Silva</td>
+                                    <td>Barbeiro</td>
+                                    <td>pedro.s@gmail.com</td>
+                                    <td>(21) 95532-4784</td>
+                                    <td class="actions">
+                                        <button class="btn btn-primary btn-sm">Editar</button>
+                                        <button class="btn btn-danger btn-sm">Excluir</button>
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">R$150,00</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                        <button class="text-pink-600 hover:text-pink-900 mr-3">Ver</button>
-                                        <button class="text-gray-600 hover:text-gray-900">Editar</button>
+                                </tr>
+                                <tr>
+                                    <td>Matheus Pereira</td>
+                                    <td>Manicure/pedicure</td>
+                                    <td>matheus.p@gmail.com</td>
+                                    <td>(21) 92222-1128</td>
+                                    <td class="actions">
+                                        <button class="btn btn-primary btn-sm">Editar</button>
+                                        <button class="btn btn-danger btn-sm">Excluir</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Carla Correa</td>
+                                    <td>Cabelereira</td>
+                                    <td>carla.c@gmail.com</td>
+                                    <td>(21) 92345-0668</td>
+                                    <td class="actions">
+                                        <button class="btn btn-primary btn-sm">Editar</button>
+                                        <button class="btn btn-danger btn-sm">Excluir</button>
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
-                    <div class="px-6 py-3 border-t border-gray-200 flex items-center justify-between">
-                        <div class="text-sm text-gray-500">
-                            Mostrando <span class="font-medium">1</span> a <span class="font-medium">5</span> de <span class="font-medium">24</span> resultados
-                        </div>
-                        <div class="flex space-x-1">
-                            <button class="px-3 py-1 text-xs bg-gray-100 text-gray-700 rounded-full">Anterior</button>
-                            <button class="px-3 py-1 text-xs bg-pink-100 text-pink-700 rounded-full">1</button>
-                            <button class="px-3 py-1 text-xs bg-gray-100 text-gray-700 rounded-full">2</button>
-                            <button class="px-3 py-1 text-xs bg-gray-100 text-gray-700 rounded-full">3</button>
-                            <button class="px-3 py-1 text-xs bg-gray-100 text-gray-700 rounded-full">Próximo</button>
-                        </div>
-                    </div>
                 </div>
-            </main>
+            </div>
+
+            <!-- PAINEL DE CADASTRO DE CLIENTE -->
+            <div id="new-client-panel" class="content-panel" style="display: none;">
+                <h1><i class="fas fa-user-plus"></i> Cadastrar Novo Cliente</h1>
+                
+                <div class="form-container">
+                    <h2><i class="fas fa-user-edit"></i> Informações Pessoais</h2>
+                    <form id="client-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="client-name">Nome Completo</label>
+                                <input type="text" id="client-name" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="client-email">E-mail</label>
+                                <input type="email" id="client-email" class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="client-phone">Telefone</label>
+                                <input type="tel" id="client-phone" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="client-birthdate">Data de Nascimento</label>
+                                <input type="date" id="client-birthdate" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="client-address">Endereço</label>
+                            <input type="text" id="client-address" class="form-control">
+                        </div>
+                        
+                        <h3><i class="fas fa-calendar-alt"></i> Agendamento</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="appointment-date">Data</label>
+                                <input type="date" id="appointment-date" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="appointment-service">Serviço</label>
+                                <select id="appointment-service" class="form-control" required>
+                                    <option value="">Selecione um serviço</option>
+                                    <option value="corte-feminino">Corte Feminino (R$40)</option>
+                                    <option value="corte-masculino">Corte Masculino (R$30)</option>
+                                    <option value="barba">Barba (R$25)</option>
+                                    <option value="hidratacao">Hidratação (R$45)</option>
+                                    <option value="pintura">Pintura (R$50)</option>
+                                    <option value="manicure">Manicure (R$35)</option>
+                                    <option value="pedicure">Pedicure (R$40)</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Horários Disponíveis</label>
+                            <div class="time-slots">
+                                <div class="time-slot">09:00</div>
+                                <div class="time-slot">10:00</div>
+                                <div class="time-slot">11:00</div>
+                                <div class="time-slot">12:00</div>
+                                <div class="time-slot">14:00</div>
+                                <div class="time-slot">15:00</div>
+                                <div class="time-slot">16:00</div>
+                                <div class="time-slot">17:00</div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="appointment-notes">Observações</label>
+                            <textarea id="appointment-notes" class="form-control" rows="3"></textarea>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-success">Agendar e Cadastrar</button>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 
-    <script src="admPage.js"></script>
+    <!-- SCRIPTS -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // ===== NAVEGAÇÃO DA BARRA LATERAL =====
+            const menuItems = document.querySelectorAll('.sidebar-menu li');
+            
+            menuItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    menuItems.forEach(i => i.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    document.querySelectorAll('.content-panel').forEach(panel => {
+                        panel.style.display = 'none';
+                    });
+                    
+                    const targetPanel = this.getAttribute('data-panel');
+                    if (targetPanel) {
+                        document.getElementById(targetPanel).style.display = 'block';
+                    }
+                });
+            });
+
+            // ===== SELEÇÃO DE HORÁRIOS =====
+            const timeSlots = document.querySelectorAll('.time-slot:not(.unavailable)');
+            timeSlots.forEach(slot => {
+                slot.addEventListener('click', function() {
+                    document.querySelectorAll('.time-slot').forEach(s => s.classList.remove('selected'));
+                    this.classList.add('selected');
+                });
+            });
+
+            // ===== GRÁFICOS =====
+            const themeColors = {
+                primary: '#4a90e2',
+                darkBg: '#1e1e1e',
+                border: '#333',
+                textLight: '#e0e0e0',
+                textLighter: '#f0f0f0',
+                textMuted: '#a0a0a0'
+            };
+
+            // 1. Serviços Mais Populares (Pizza)
+            new Chart(document.getElementById('servicesChart'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['Corte Feminino (R$40)', 'Corte Masculino (R$30)', 'Barba (R$25)', 'Hidratação (R$45)', 'Pintura (R$50)'],
+                    datasets: [{
+                        data: [40, 30, 20, 25, 15],
+                        backgroundColor: [
+                            '#4a90e2',
+                            '#5a9de6',
+                            '#6aa9ea',
+                            '#7ab6ee',
+                            '#8ac2f2'
+                        ],
+                        borderColor: themeColors.darkBg,
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                            labels: {
+                                color: themeColors.textLight
+                            }
+                        }
+                    },
+                    cutout: '70%'
+                }
+            });
+
+            // 2. Movimento Mensal (Linha)
+            new Chart(document.getElementById('monthlyClientsChart'), {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul'],
+                    datasets: [{
+                        label: 'Clientes Atendidos',
+                        data: [100, 110, 115, 105, 120, 125, 118],
+                        borderColor: themeColors.primary,
+                        backgroundColor: 'rgba(74, 144, 226, 0.1)',
+                        fill: true,
+                        tension: 0.3,
+                        borderWidth: 2,
+                        pointBackgroundColor: themeColors.primary,
+                        pointBorderColor: themeColors.darkBg,
+                        pointRadius: 5,
+                        pointHoverRadius: 7
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            ticks: {
+                                color: themeColors.textMuted
+                            }
+                        },
+                        x: {
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            ticks: {
+                                color: themeColors.textMuted
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: themeColors.textLight
+                            }
+                        }
+                    }
+                }
+            });
+
+            // 3. Perfil das Clientes (Barras)
+            new Chart(document.getElementById('clientsProfileChart'), {
+                type: 'bar',
+                data: {
+                    labels: ['18-25 anos', '26-35 anos', '36-45 anos', '46+ anos'],
+                    datasets: [{
+                        label: 'Clientes por Faixa Etária',
+                        data: [25, 50, 30, 15],
+                        backgroundColor: [
+                            'rgba(74, 144, 226, 0.7)',
+                            'rgba(90, 157, 230, 0.7)',
+                            'rgba(106, 169, 234, 0.7)',
+                            'rgba(122, 182, 238, 0.7)'
+                        ],
+                        borderColor: themeColors.darkBg,
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            ticks: {
+                                color: themeColors.textMuted
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                color: themeColors.textMuted
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: themeColors.textLight
+                            }
+                        }
+                    }
+                }
+            });
+
+            // 4. Lucro por Serviço (Barras Horizontais)
+            new Chart(document.getElementById('profitServicesChart'), {
+                type: 'bar',
+                data: {
+                    labels: ['Corte Feminino', 'Corte Masculino', 'Barba', 'Hidratação', 'Pintura'],
+                    datasets: [{
+                        label: 'Lucro Médio Mensal (R$)',
+                        data: [1600, 900, 500, 1125, 750],
+                        backgroundColor: 'rgba(74, 144, 226, 0.7)',
+                        borderColor: themeColors.darkBg,
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            ticks: {
+                                color: themeColors.textMuted
+                            }
+                        },
+                        y: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                color: themeColors.textMuted
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: themeColors.textLight
+                            }
+                        }
+                    }
+                }
+            });
+
+            // 5. Faturamento Anual (Barras)
+            new Chart(document.getElementById('annualRevenueChart'), {
+                type: 'bar',
+                data: {
+                    labels: ['1° Trim', '2° Trim', '3° Trim', '4° Trim'],
+                    datasets: [{
+                        label: 'Faturamento (R$)',
+                        data: [15000, 16500, 18000, 19500],
+                        backgroundColor: [
+                            'rgba(74, 144, 226, 0.7)',
+                            'rgba(90, 157, 230, 0.7)',
+                            'rgba(106, 169, 234, 0.7)',
+                            'rgba(122, 182, 238, 0.7)'
+                        ],
+                        borderColor: themeColors.darkBg,
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            ticks: {
+                                color: themeColors.textMuted
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                color: themeColors.textMuted
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: themeColors.textLight
+                            }
+                        }
+                    }
+                }
+            });
+
+            // ===== FORMULÁRIOS =====
+            document.getElementById('employee-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                alert('Funcionário cadastrado com sucesso!');
+                this.reset();
+            });
+
+            document.getElementById('client-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                alert('Cliente cadastrado e agendamento realizado com sucesso!');
+                this.reset();
+                document.querySelectorAll('.time-slot').forEach(s => s.classList.remove('selected'));
+            });
+        });
+    </script>
 </body>
 </html>

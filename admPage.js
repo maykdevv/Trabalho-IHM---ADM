@@ -1,37 +1,37 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     // Toggle do menu mobile
     const mobileMenuButton = document.getElementById('mobile-menu-button');
     const sidebarToggle = document.getElementById('sidebar-toggle');
     const sidebar = document.querySelector('.sidebar');
     const overlay = document.querySelector('.overlay');
-    
+
     mobileMenuButton.addEventListener('click', () => {
         sidebar.classList.add('active');
         overlay.classList.add('active');
     });
-    
+
     sidebarToggle.addEventListener('click', () => {
         sidebar.classList.remove('active');
         overlay.classList.remove('active');
     });
-    
+
     overlay.addEventListener('click', () => {
         sidebar.classList.remove('active');
         overlay.classList.remove('active');
     });
-    
+
     // Toggle da busca
     const searchButton = document.getElementById('search-button');
     const searchBox = document.getElementById('search-box');
-    
+
     searchButton.addEventListener('click', () => {
         searchBox.classList.toggle('hidden');
     });
-    
+
     // Toggle do modo escuro
     const darkModeToggle = document.getElementById('dark-mode-toggle');
     const body = document.body;
-    
+
     darkModeToggle.addEventListener('click', () => {
         body.classList.toggle('dark-mode');
         const icon = darkModeToggle.querySelector('i');
@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', function() {
             icon.classList.add('fa-moon');
         }
     });
-    
+
     // Modo escuro automático após 18h
     function verificarHora() {
         const agora = new Date();
@@ -55,36 +55,36 @@ document.addEventListener('DOMContentLoaded', function() {
             icon.classList.add('fa-sun');
         }
     }
-    
+
     verificarHora();
-    
+
     // Busca por voz
     const voiceSearch = document.getElementById('voice-search');
-    
+
     voiceSearch.addEventListener('click', () => {
         alert('Busca por voz ativada. Fale agora...');
     });
-    
+
     // Tooltips
     const tooltips = document.querySelectorAll('.tooltip');
-    
+
     tooltips.forEach(tooltip => {
         tooltip.addEventListener('mouseenter', (e) => {
             const tooltipText = tooltip.getAttribute('data-tooltip');
             const tooltipElement = document.createElement('div');
             tooltipElement.className = 'absolute z-50 px-2 py-1 text-xs text-white bg-gray-800 rounded whitespace-nowrap';
             tooltipElement.textContent = tooltipText;
-            
+
             const rect = tooltip.getBoundingClientRect();
             tooltipElement.style.top = `${rect.top - 30}px`;
             tooltipElement.style.left = `${rect.left + rect.width / 2}px`;
             tooltipElement.style.transform = 'translateX(-50%)';
-            
+
             document.body.appendChild(tooltipElement);
-            
+
             tooltip._tooltipElement = tooltipElement;
         });
-        
+
         tooltip.addEventListener('mouseleave', () => {
             if (tooltip._tooltipElement) {
                 document.body.removeChild(tooltip._tooltipElement);
@@ -92,7 +92,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
-    
+
     // Gráficos
     // Gráfico de Vendas
     const salesCtx = document.getElementById('salesChart').getContext('2d');
@@ -132,7 +132,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     });
-    
+
     // Gráfico de Tráfego
     const trafficCtx = document.getElementById('trafficChart').getContext('2d');
     const trafficChart = new Chart(trafficCtx, {
@@ -164,7 +164,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     });
-    
+
     // Atalhos de teclado
     document.addEventListener('keydown', (e) => {
         if (e.ctrlKey && e.key === 'h') {
@@ -172,4 +172,105 @@ document.addEventListener('DOMContentLoaded', function() {
             alert('Navegando para o Histórico de Vendas');
         }
     });
+});
+
+// Gráfico de Distribuição de Serviços
+const servicosCtx = document.getElementById('servicosChart')?.getContext('2d');
+if (servicosCtx) {
+    new Chart(servicosCtx, {
+        type: 'pie',
+        data: {
+            labels: ['Corte', 'Coloração', 'Manicure', 'Depilação', 'Sobrancelha'],
+            datasets: [{
+                data: [25, 20, 15, 30, 10],
+                backgroundColor: [
+                    'rgba(236, 72, 153, 0.8)',
+                    'rgba(99, 102, 241, 0.8)',
+                    'rgba(16, 185, 129, 0.8)',
+                    'rgba(245, 158, 11, 0.8)',
+                    'rgba(239, 68, 68, 0.8)'
+                ],
+                borderWidth: 0
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'bottom'
+                }
+            }
+        }
+    });
+}
+
+// Gráfico de Evolução de Agendamentos
+const agendamentosCtx = document.getElementById('agendamentosChart')?.getContext('2d');
+if (agendamentosCtx) {
+    new Chart(agendamentosCtx, {
+        type: 'line',
+        data: {
+            labels: ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'],
+            datasets: [{
+                label: 'Agendamentos',
+                data: [12, 19, 14, 23, 17, 28, 20],
+                backgroundColor: 'rgba(236, 72, 153, 0.2)',
+                borderColor: 'rgba(236, 72, 153, 1)',
+                borderWidth: 2,
+                tension: 0.4,
+                fill: true,
+                pointRadius: 4,
+                pointBackgroundColor: 'rgba(236, 72, 153, 1)'
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        color: '#4B5563'
+                    }
+                },
+                x: {
+                    ticks: {
+                        color: '#4B5563'
+                    }
+                }
+            }
+        }
+    });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const menuItems = document.querySelectorAll('.sidebar-menu li');
+    
+    menuItems.forEach(item => {
+        item.addEventListener('click', function() {
+            // Remove a classe 'active' de todos os itens
+            menuItems.forEach(i => i.classList.remove('active'));
+            
+            // Adiciona a classe 'active' ao item clicado
+            this.classList.add('active');
+            
+            // Oculta todos os painéis
+            document.querySelectorAll('.content-panel').forEach(panel => {
+                panel.style.display = 'none';
+            });
+            
+            // Mostra o painel correspondente
+            const targetPanel = this.getAttribute('data-panel');
+            if (targetPanel) {
+                document.getElementById(targetPanel).style.display = 'block';
+            }
+        });
+    });
+    
+    // Mostra o painel principal por padrão
+    document.getElementById('main-panel').style.display = 'block';
 });

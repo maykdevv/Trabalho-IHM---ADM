@@ -1,7 +1,8 @@
 .auth-container {
-    background-image: url('https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80');
+    background-image: url('fundologin.png');
     background-size: cover;
     background-position: center;
+    min-height: 100%;;
 }
 
 .form-switch {
@@ -32,4 +33,31 @@
 .user-type-btn.active {
     border-color: #ec4899;
     background-color: rgba(168, 85, 247, 0.1);
+}
+
+/* Estilo para o painel principal */
+.main-panel {
+    margin-left: 250px; /* Largura da barra lateral */
+    width: calc(100% - 250px);
+    min-height: 100vh;
+    padding: 20px;
+    transition: all 0.3s ease;
+}
+
+/* Se estiver usando grid ou flexbox */
+.dashboard-container {
+    display: grid;
+    grid-template-columns: 250px 1fr;
+    min-height: 100vh;
+}
+
+/* Ajuste para os gráficos */
+.chart-container {
+    width: 100%;
+    height: auto;
+    margin-bottom: 20px;
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
