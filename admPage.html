@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Administrativo - Salão de Beleza</title>
-    <!-- Font Awesome (ícones) -->
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -261,7 +262,8 @@
             border: 1px solid #333;
         }
 
-        th, td {
+        th,
+        td {
             padding: 12px 15px;
             text-align: left;
             border-bottom: 1px solid #333;
@@ -345,22 +347,28 @@
             background-color: rgba(231, 76, 60, 0.2);
             color: #e74c3c;
         }
-    /* Adicione isso na seção de estilos CSS */
-    #servicesChart {
-        max-height: 700px; /* Você pode ajustar esse valor conforme necessário */
-    }
-    #monthlyClientsChart {
-        max-height: 700px
-    }
-    #clientsProfileChart {
-        max-height: 700px;
-    }
-    #profitServicesChart {
-        max-height: 720px;
-    }
-        </style>
+
+        /* Adicione isso na seção de estilos CSS */
+        #servicesChart {
+            max-height: 700px;
+            /* Você pode ajustar esse valor conforme necessário */
+        }
+
+        #monthlyClientsChart {
+            max-height: 700px
+        }
+
+        #clientsProfileChart {
+            max-height: 700px;
+        }
+
+        #profitServicesChart {
+            max-height: 720px;
+        }
+    </style>
 
 </head>
+
 <body>
     <div class="dashboard-container">
         <!-- BARRA LATERAL -->
@@ -393,6 +401,9 @@
                 <li data-panel="appointments-panel">
                     <i class="fas fa-calendar-alt"></i> Agendamentos
                 </li>
+                <li data-panel="manage-services-panel">
+                    <i class="fas fa-plus-circle"></i> Gerenciar Serviços
+                </li>
             </ul>
         </div>
 
@@ -401,7 +412,7 @@
             <!-- DASHBOARD -->
             <div id="main-panel" class="content-panel" style="display: block;">
                 <h1><i class="fas fa-tachometer-alt"></i> Visão Geral</h1>
-                
+
                 <!-- MÉTRICAS RÁPIDAS -->
                 <div class="metrics-grid">
                     <div class="metric-card">
@@ -460,7 +471,7 @@
             <!-- PAINEL DE FUNCIONÁRIOS -->
             <div id="employees-panel" class="content-panel" style="display: none;">
                 <h1><i class="fas fa-user-tie"></i> Gestão de Funcionários </h1>
-                
+
                 <div class="form-container">
                     <h2><i class="fas fa-plus-circle"></i> Adicionar Novo Funcionário</h2>
                     <form id="employee-form">
@@ -605,7 +616,7 @@
             <!-- PAINEL DE CADASTRO DE CLIENTE -->
             <div id="new-client-panel" class="content-panel" style="display: none;">
                 <h1><i class="fas fa-user-plus"></i> Cadastrar Novo Cliente</h1>
-                
+
                 <div class="form-container">
                     <h2><i class="fas fa-user-edit"></i> Informações Pessoais</h2>
                     <form id="client-form">
@@ -633,7 +644,7 @@
                             <label for="client-address">Endereço</label>
                             <input type="text" id="client-address" class="form-control">
                         </div>
-                        
+
                         <h3><i class="fas fa-calendar-alt"></i> Agendamento</h3>
                         <div class="form-row">
                             <div class="form-group">
@@ -654,7 +665,7 @@
                                 </select>
                             </div>
                         </div>
-                        
+
                         <div class="form-group">
                             <label>Horários Disponíveis</label>
                             <div class="time-slots">
@@ -668,12 +679,12 @@
                                 <div class="time-slot">17:00</div>
                             </div>
                         </div>
-                        
+
                         <div class="form-group">
                             <label for="appointment-notes">Observações</label>
                             <textarea id="appointment-notes" class="form-control" rows="3"></textarea>
                         </div>
-                        
+
                         <button type="submit" class="btn btn-success">Agendar e Cadastrar</button>
                     </form>
                 </div>
@@ -682,7 +693,7 @@
             <!-- PAINEL DE AGENDAMENTOS -->
             <div id="appointments-panel" class="content-panel" style="display: none;">
                 <h1><i class="fas fa-calendar-alt"></i> Agendamentos</h1>
-                
+
                 <div class="chart-container">
                     <h2><i class="fas fa-list"></i> Próximos Agendamentos</h2>
                     <div class="table-container">
@@ -795,23 +806,311 @@
                     </div>
                 </div>
             </div>
+            <!-- PAINEL DE GERENCIAMENTO DE SERVIÇOS -->
+            <div id="manage-services-panel" class="content-panel" style="display: none;">
+                <h1><i class="fas fa-plus-circle"></i> Gerenciar Serviços</h1>
+
+                <div class="form-container">
+                    <h2><i class="fas fa-plus"></i> Adicionar Novo Serviço</h2>
+                    <form id="service-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="service-name">Nome do Serviço</label>
+                                <input type="text" id="service-name" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="service-price">Preço (R$)</label>
+                                <input type="number" id="service-price" class="form-control" step="0.01" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="service-duration">Duração (minutos)</label>
+                                <input type="number" id="service-duration" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="service-category">Categoria</label>
+                                <input type="text" id="service-category" class="form-control"
+                                    placeholder="Ex: Cabelo, Barba, Sobrancelha" required>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="service-description">Descrição</label>
+                            <textarea id="service-description" class="form-control" rows="3"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-success">Cadastrar Serviço</button>
+                    </form>
+                </div>
+
+                <!-- Substitua a tabela por este carrossel -->
+                <div class="chart-container">
+                    <h2><i class="fas fa-list"></i> Serviços Cadastrados</h2>
+
+                    <div class="services-carousel">
+                        <button class="carousel-btn prev-btn"><i class="fas fa-chevron-left"></i></button>
+
+                        <div class="carousel-container">
+                            <div class="carousel-track">
+                                <!-- Cards serão gerados automaticamente via JavaScript -->
+                            </div>
+                        </div>
+
+                        <button class="carousel-btn next-btn"><i class="fas fa-chevron-right"></i></button>
+                    </div>
+
+                    <div class="carousel-dots"></div>
+                </div>
+
+                <style>
+                    /* === ESTILOS DO CARROSSEL === */
+                    .services-carousel {
+                        display: flex;
+                        align-items: center;
+                        gap: 15px;
+                        margin: 20px 0;
+                        position: relative;
+                    }
+
+                    .carousel-container {
+                        width: 100%;
+                        overflow: hidden;
+                    }
+
+                    .carousel-track {
+                        display: flex;
+                        transition: transform 0.5s ease;
+                        gap: 15px;
+                        padding: 5px;
+                    }
+
+                    .service-card {
+                        min-width: 280px;
+                        background: #2a2a2a;
+                        border-radius: 8px;
+                        padding: 20px;
+                        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+                        border: 1px solid #333;
+                        transition: all 0.3s ease;
+                    }
+
+                    .service-card:hover {
+                        transform: translateY(-5px);
+                        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+                    }
+
+                    .service-card h3 {
+                        color: #4a90e2;
+                        margin-bottom: 10px;
+                        font-size: 1.1rem;
+                        min-height: 50px;
+                    }
+
+                    .service-card p {
+                        color: #b0b0b0;
+                        margin: 8px 0;
+                        font-size: 0.9rem;
+                    }
+
+                    .service-price {
+                        font-size: 1.2rem;
+                        color: #2ecc71;
+                        font-weight: bold;
+                    }
+
+                    .service-duration {
+                        display: inline-block;
+                        background: rgba(241, 196, 15, 0.2);
+                        color: #f1c40f;
+                        padding: 3px 8px;
+                        border-radius: 12px;
+                        font-size: 0.8rem;
+                    }
+
+                    .carousel-btn {
+                        background: #1e1e1e;
+                        border: 1px solid #333;
+                        color: #4a90e2;
+                        width: 40px;
+                        height: 40px;
+                        border-radius: 50%;
+                        cursor: pointer;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        transition: all 0.3s ease;
+                    }
+
+                    .carousel-btn:hover {
+                        background: #4a90e2;
+                        color: white;
+                    }
+
+                    .carousel-btn:disabled {
+                        opacity: 0.5;
+                        cursor: not-allowed;
+                    }
+
+                    .carousel-dots {
+                        display: flex;
+                        justify-content: center;
+                        gap: 8px;
+                        margin-top: 15px;
+                    }
+
+                    .carousel-dot {
+                        width: 10px;
+                        height: 10px;
+                        border-radius: 50%;
+                        background: #333;
+                        cursor: pointer;
+                        transition: all 0.3s ease;
+                    }
+
+                    .carousel-dot.active {
+                        background: #4a90e2;
+                        transform: scale(1.2);
+                    }
+
+                    .service-actions {
+                        margin-top: 15px;
+                        display: flex;
+                        gap: 8px;
+                    }
+                </style>
+
+                <script>
+                    document.addEventListener('DOMContentLoaded', function () {
+                        // Lista de serviços (extraída da sua tabela)
+                        const services = [
+                            { name: "Corte Feminino Simples", price: "R$ 30,00", duration: "25 min", description: "Corte simples (tesoura)." },
+                            { name: "Corte Feminino", price: "R$ 40,00", duration: "30 min", description: "Tratamento (tesoura + hidratação)" },
+                            { name: "Progressiva", price: "R$ 40,00", duration: "40 min", description: "Processo para alisar e hidratar o cabelo." },
+                            { name: "Corte Masculino Simples", price: "R$ 30,00", duration: "30 min", description: "Corte simplificado (máquina + tesoura)." },
+                            { name: "Corte Masculino Completo", price: "R$ 45,00", duration: "40 min", description: "Corte (máquina + tesoura + barba)." },
+                            { name: "Coloração", price: "R$ 80,00", duration: "1h", description: "Técnicas de tintura modernas." },
+                            { name: "Barba Simples", price: "R$ 20,00", duration: "20 min", description: "Manutenção simples da barba." },
+                            { name: "Barba Pigmentada", price: "R$ 40,00", duration: "30 min", description: "Manutenção e pigmentação da barba." },
+                            { name: "Sobrancelhas", price: "R$ 20,00", duration: "15 min", description: "Modelagem padrão." },
+                            { name: "Design De Sobrancelhas", price: "R$ 30,00", duration: "25 min", description: "Técnicas avançadas de modelagem." },
+                            { name: "Limpeza de Pele Completa", price: "R$ 90,00", duration: "1h", description: "Remoção de impurezas e hidratação." },
+                            { name: "Manicure Completa", price: "R$ 60,00", duration: "1h20min", description: "Cuidados com cutículas e esmaltação." },
+                            { name: "Aplicar Unha De Gel", price: "R$ 60,00", duration: "1h", description: "Apicação de unhas de gel." },
+                            { name: "Cuidados Unha De Gel", price: "R$ 30,00", duration: "25 min", description: "Manutenção de unhas de gel." },
+                            { name: "Unha De Acrílico", price: "R$ 40,00", duration: "1h", description: "Apicação de unhas de acrílico." },
+                            { name: "Banho De Fibra", price: "R$ 70,00", duration: "50 min", description: "Processo de alongamento das unhas." },
+                            { name: "Massagem Relaxante", price: "R$ 100,00", duration: "30 min", description: "Alívio de tensões e relaxamento." },
+                            { name: "Massagem Com Marreta", price: "R$ 130,00", duration: "1h", description: "descanso, alívio e satisfação." },
+                            { name: "Depilação", price: "R$ 80,00", duration: "1h", description: "Com cera quente ou roll-on." },
+                            { name: "Pacote Glow Up Mensal", price: "R$ 180,00", duration: "2h30", description: "Cuidados regulares: limpeza de pele, corte, escova ou manicure." },
+                            { name: "Dia de Spa", price: "R$ 120,00", duration: "1h", description: "Massagem curta e hidratação." },
+                            { name: "Dia de Spa Luxo", price: "R$ 160,00", duration: "2h", description: "Massagem média, unhas e facial." },
+                            { name: "Dia De Noiva", price: "R$ 160,00", duration: "2h", description: "Massagem longa, facial, hidratação capilar e unhas." }
+                        ];
+
+                        // Elementos do carrossel
+                        const carouselTrack = document.querySelector('.carousel-track');
+                        const dotsContainer = document.querySelector('.carousel-dots');
+                        const prevBtn = document.querySelector('.prev-btn');
+                        const nextBtn = document.querySelector('.next-btn');
+
+                        // Configurações
+                        let currentIndex = 0;
+                        const cardsPerView = Math.min(3, services.length); // Mostrar até 3 cards por vez
+                        const totalSlides = Math.ceil(services.length / cardsPerView);
+
+                        // Criar cards de serviço
+                        services.forEach((service, index) => {
+                            const card = document.createElement('div');
+                            card.className = 'service-card';
+                            card.innerHTML = `
+            <h3>${service.name}</h3>
+            <p class="service-price">${service.price}</p>
+            <span class="service-duration">${service.duration}</span>
+            <p style="margin-top: 10px;">${service.description}</p>
+            <div class="service-actions">
+                <button class="btn btn-primary btn-sm">Editar</button>
+                <button class="btn btn-danger btn-sm">Excluir</button>
+            </div>
+        `;
+                            carouselTrack.appendChild(card);
+                        });
+
+                        // Criar dots de navegação
+                        for (let i = 0; i < totalSlides; i++) {
+                            const dot = document.createElement('div');
+                            dot.className = 'carousel-dot';
+                            if (i === 0) dot.classList.add('active');
+                            dot.addEventListener('click', () => goToSlide(i));
+                            dotsContainer.appendChild(dot);
+                        }
+
+                        // Função para navegar entre slides
+                        function goToSlide(index) {
+                            currentIndex = index;
+                            const trackWidth = carouselTrack.offsetWidth;
+                            const cardWidth = carouselTrack.children[0].offsetWidth + 15; // + gap
+                            const newPosition = -currentIndex * cardsPerView * cardWidth;
+
+                            carouselTrack.style.transform = `translateX(${newPosition}px)`;
+
+                            // Atualizar dots ativos
+                            document.querySelectorAll('.carousel-dot').forEach((dot, i) => {
+                                dot.classList.toggle('active', i === currentIndex);
+                            });
+
+                            // Atualizar estado dos botões
+                            prevBtn.disabled = currentIndex === 0;
+                            nextBtn.disabled = currentIndex >= totalSlides - 1;
+                        }
+
+                        // Event listeners para os botões
+                        prevBtn.addEventListener('click', () => goToSlide(currentIndex - 1));
+                        nextBtn.addEventListener('click', () => goToSlide(currentIndex + 1));
+
+                        // Inicializar
+                        goToSlide(0);
+
+                        // Ajustar o carrossel quando a janela for redimensionada
+                        window.addEventListener('resize', () => {
+                            goToSlide(currentIndex);
+                        });
+
+                        // Adicionar funcionalidade aos botões de editar/excluir
+                        document.querySelectorAll('.service-actions .btn').forEach(btn => {
+                            btn.addEventListener('click', function () {
+                                const serviceName = this.closest('.service-card').querySelector('h3').textContent;
+                                if (this.classList.contains('btn-danger')) {
+                                    if (confirm(`Tem certeza que deseja excluir o serviço "${serviceName}"?`)) {
+                                        this.closest('.service-card').remove();
+                                        // Aqui você adicionaria a lógica para remover do banco de dados
+                                    }
+                                } else {
+                                    // Lógica para editar o serviço
+                                    alert(`Editar serviço: ${serviceName}`);
+                                }
+                            });
+                        });
+                    });
+                </script>
+            </div>
         </div>
     </div>
     <!-- SCRIPTS -->
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             // ===== NAVEGAÇÃO DA BARRA LATERAL =====
             const menuItems = document.querySelectorAll('.sidebar-menu li');
-            
+
             menuItems.forEach(item => {
-                item.addEventListener('click', function() {
+                item.addEventListener('click', function () {
                     menuItems.forEach(i => i.classList.remove('active'));
                     this.classList.add('active');
-                    
+
                     document.querySelectorAll('.content-panel').forEach(panel => {
                         panel.style.display = 'none';
                     });
-                    
+
                     const targetPanel = this.getAttribute('data-panel');
                     if (targetPanel) {
                         document.getElementById(targetPanel).style.display = 'block';
@@ -822,7 +1121,7 @@
             // ===== SELEÇÃO DE HORÁRIOS =====
             const timeSlots = document.querySelectorAll('.time-slot:not(.unavailable)');
             timeSlots.forEach(slot => {
-                slot.addEventListener('click', function() {
+                slot.addEventListener('click', function () {
                     document.querySelectorAll('.time-slot').forEach(s => s.classList.remove('selected'));
                     this.classList.add('selected');
                 });
@@ -1072,7 +1371,7 @@
 
             // ==== SEÇÃO DE AGENDAMENTOS NA BARRA LATERAL ====
             const sidebar = document.querySelector('.sidebar');
-            
+
             // Criar a seção de agendamentos
             const appointmentsSection = document.createElement('div');
             appointmentsSection.className = 'sidebar-appointments';
@@ -1120,7 +1419,7 @@
                     </div>
                 </div>
             `;
-            
+
             // Adicionar estilos para a seção de agendamentos
             const style = document.createElement('style');
             style.textContent = `
@@ -1210,11 +1509,58 @@
                     border-radius: 10px;
                 }
             `;
-            
+
             // Adicionar a seção e os estilos ao DOM
             document.head.appendChild(style);
             sidebar.appendChild(appointmentsSection);
         });
+        // ==== GERENCIAMENTO DE SERVIÇOS ====
+        document.getElementById('service-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const serviceName = document.getElementById('service-name').value;
+            const serviceCategory = document.getElementById('service-category').value; // Novo campo
+            const servicePrice = document.getElementById('service-price').value;
+            const serviceDuration = document.getElementById('service-duration').value;
+            const serviceDescription = document.getElementById('service-description').value;
+
+            // Aqui você pode adicionar a lógica para cadastrar o serviço
+            alert(`Serviço "${serviceName}" (${serviceCategory}) cadastrado com sucesso!`);
+
+            this.reset();
+        });
+
+        // Adicione aqui a lógica para editar/excluir serviços quando os botões são clicados
+        document.querySelectorAll('#manage-services-panel .btn-danger').forEach(btn => {
+            btn.addEventListener('click', function () {
+                // Lógica para excluir o serviço
+                const serviceName = this.closest('tr').querySelector('td:first-child').textContent;
+                if (confirm(`Tem certeza que deseja excluir o serviço "${serviceName}"?`)) {
+                    this.closest('tr').remove();
+                }
+            });
+        });
+
+        document.querySelectorAll('#manage-services-panel .btn-primary').forEach(btn => {
+            btn.addEventListener('click', function () {
+                // Lógica para editar o serviço
+                const row = this.closest('tr');
+                const serviceName = row.querySelector('td:nth-child(1)').textContent;
+                const servicePrice = row.querySelector('td:nth-child(2)').textContent.replace('R$ ', '');
+                const serviceDuration = row.querySelector('td:nth-child(3)').textContent.replace(' min', '');
+                const serviceDescription = row.querySelector('td:nth-child(4)').textContent;
+
+                // Preencher o formulário com os dados para edição
+                document.getElementById('service-name').value = serviceName;
+                document.getElementById('service-price').value = servicePrice;
+                document.getElementById('service-duration').value = serviceDuration;
+                document.getElementById('service-description').value = serviceDescription;
+
+                // Rolar até o formulário
+                document.getElementById('service-name').focus();
+            });
+        });
     </script>
 </body>
+
 </html>
